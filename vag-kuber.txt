@@ -1,0 +1,35 @@
+Vagrant.configure(2) do  config 
+  config.vm.define kmaster do  kmaster 
+      kmaster.vm.box = ubuntufocal64
+      kmaster.vm.network private_network, ip 192.168.20.10        
+      kmaster.vm.hostname =kmaster
+      kmaster.vm.provider virtualbox do  vb 
+          vb.cpus=3
+          vb.memory=3072
+          vb.name=kmaster
+      end
+  end
+  %w{wnode1 wnode2}.each_with_index do  nodename, index 
+      config.vm.define nodename do  node 
+          node.vm.box = ubuntufocal64
+          node.vm.hostname = nodename
+          node.vm.network private_network, ip 192.168.20.#{index+11}
+          node.vm.provider virtualbox do  vb 
+              vb.cpus = 2
+              vb.memory = 1024
+              vb.name = nodename
+          end
+      end
+  end
+  config.vm.define jcrnode do  jcrnode 
+      jcrnode.vm.box = ubuntufocal64
+      jcrnode.vm.network private_network, ip 192.168.20.13 
+      jcrnode.vm.network forwarded_port, guest 8082, host 8082
+      jcrnode.vm.hostname =jcrnode.com
+      jcrnode.vm.provider virtualbox do  vb 
+          vb.cpus=2
+          vb.memory=1024
+          vb.name=jcrnode
+      end
+  end
+end
